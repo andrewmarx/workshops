@@ -1,0 +1,245 @@
+#----------
+# Hipergator
+#----------
+
+  https://www.rc.ufl.edu/
+  https://wiki.rc.ufl.edu/doc/UFRC_Help_and_Documentation
+
+
+#----------
+# Hipergator Directories
+#----------
+
+  /home
+    Personal storage for saving files long term. Not meant for storing data or doing analysis. Good place for keeping scripts and log files.
+
+  /ufrc
+  /ufrc/<groupname>/<username>
+    Working storage for analysis (this is where your data files go). Files not being used for long periods of time may be automatically removed
+
+
+#----------
+# Linux Command Line Conventions
+#----------
+
+  File and folder names are case-sensitive
+
+  / refers to root (the equivalent of C: on Windows)
+
+  ~ refers to your home folder/directory
+
+  ./ refers to the current folder
+
+  ../ refers to the parent folder, or the folder that the current folder is in
+
+  * is a wildcard that represents one or more arbitrary characters
+
+  ? is a wildcard that represents exactly one arbitrary character
+
+  I highly recommend you do not use spaces in filenames (use an underscore instead)
+
+  Keeping everything lower case might be beneficial as well
+
+
+#----------
+# Linux commands
+#----------
+
+  http://www.informit.com/blogs/blog.aspx?uk=The-10-Most-Important-Linux-Commands
+
+  1) ls
+    Used to list files and folders
+
+  2) cd
+    Changes the current directory
+
+  3) mv
+    Move a  file or folder
+
+  4) man
+    Shows the manual for a specific command
+
+  5) mkdir
+    Create a new directory
+
+  6) rmdir
+    Remove directory
+
+  7) touch
+    Create an empty file
+
+  8) rm
+    Removes a file or folder
+
+  9) locate
+    Find a folder or directory
+
+  10) clear
+    Cleans up the command line interface
+
+
+#----------
+# Editing documents via command line
+#----------
+
+  vi, vim, nano
+
+  nano might be most user friendly
+
+
+#----------
+# Transferring files to Hypergator
+#----------
+
+  https://wiki.rc.ufl.edu/doc/Getting_Started
+
+  There are multiple methods for transferring files to hypergator, with different advantages and disadvantages
+
+
+#----------
+# Modules
+#----------
+
+  https://wiki.rc.ufl.edu/doc/Modules
+
+  Modules are basically a way to load different sets of software and set special parameters that they need to run
+
+  By default, calling a module will load the most up to date version, i.e.,
+    "module load stacks" will load the most recent version of stacks
+
+  Different versions (if installed) can be loaded by specifying them after a slash, i.e.,
+    "module load stacks/1.24" Will load version 1.24 of stacks
+
+  To see currently loaded modules:
+    "module list"
+
+  To unload a module:
+    "module unload <module name>"
+
+  To see an up to date list of available modules:
+    "module spider"
+
+  or you can look here (may not be up to date):
+    https://wiki.rc.ufl.edu/doc/Installed_Software
+
+  To get information for a specific module:
+    "module whatis <module name>"
+
+  You can submit support requests if you want a specific piece of software installed or updated
+
+
+#----------
+# Getting account limits
+#----------
+
+  https://wiki.rc.ufl.edu/doc/Account_and_QOS_limits_under_SLURM
+
+  Load the ufrc module:
+    "module load ufrc"
+
+  run the 'showAssoc' command to see what groups you are a part of
+    "showAssoc <username>"
+
+  Use the 'showQos' command to see what resources are available to a given groups
+    "showQos austin"
+    "showQos ufgi"
+
+
+#----------
+# SLURM (Slurm Workload Manager)
+#----------
+
+  Software that takes care of managing scripts and allocating resources
+
+  When you're ready to start an analysis, you send the script to SLURM, which will then decide when to start the script, which nodes it will run on, etc...
+
+  https://wiki.rc.ufl.edu/doc/SLURM_Commands
+
+
+#----------
+# Resource use
+#----------
+
+  To see how much of the resources for a group are currently in use:
+    "slurmInfo <group>" leave group blank for primary
+
+
+#----------
+# Resource planning
+#----------
+
+  The supercomputer is basically made up of a series of smaller computers (nodes)
+
+  Every node has limited number of cores and memory
+
+  Some programs are not designed to run on more than one core. Some are designed to run on multiple cores on a single computer. Others could be designed to run on multiple cores across multiple computers.
+
+  It's important to be aware of what your needs are, what the software is able to do, and the limits of the node system
+
+  When requesting resources in your script, the more you ask for, the longer your script might have to wait in a queue until resources become available.
+
+  In other words, if you ask for less, your job might be prioritized to start sooner
+
+  Priority is determined based on a combination of both the number of cores and the amount of RAM you request
+
+  Besides, applying more cores to the same job has diminishing returns (Amdahl's Law)
+
+  Example:
+    Let's say you have 16 samples that you want to process and have acces to 32 cores.
+    You could process them one at a time using all 32 cores, or you could process them 8 at time using 4 cores each.
+    The one at a time option is likely to be much slower for a couple reasons:
+      Nodes with at least 32 cores are going to be rarer than nodes with at least 4 cores, so you'll spend more time just waiting to run
+      Although using 4 cores is slower overall to process a single sample, it is more efficient in terms of processing
+
+  SLURM will also prioritize jobs based on how much time you request for the job to run
+
+
+#----------
+# Creating scripts
+#----------
+
+  https://wiki.rc.ufl.edu/doc/Getting_Started
+  https://wiki.rc.ufl.edu/doc/Annotated_SLURM_Script
+  https://wiki.rc.ufl.edu/doc/Sample_SLURM_Scripts
+
+  Script files should be created with a simple text editor. Do not use programs like Microsoft Word. Scripts are expected to be in plain ascii text, but advanced text editing software might not adhere to this.
+
+  The extension on the script files will be .sh
+
+  The first line should be:
+    "#!/bin/bash"
+
+  The next part of the script is used to give SLURM some basic parameters. These lines all start with '#SBATCH'. E.g.,
+    "#SBATCH --job-name=<JOBNAME>" is used to set a name for the  job
+    "#SBATCH --mail-type=ALL"
+    "#SBATCH --mail-user=<email_address>"
+    (see annotated slurm script link for a more comprehensive list of parameters)
+
+  Then you load the module(s) that you need. E.g.,
+    "module load stacks"
+
+  Finally, you run the program. If we are using stacks and starting with raw sequencing data, we would use the process_radtags program to prep the data for the pipeline.
+    process_radtags -p <inputdir> -o <ouputdir> -b <barcodefile> -e <enzyme> -r -c -q
+
+
+
+#----------
+# Running scripts
+#----------
+
+  The 'sbatch' command is used to submit your script to SLURM, which will then add it to a queue
+    "sbatch <yourscript>"
+
+  The 'squeue' command is used to view a list of jobs currently in the queue
+    "squeue" by itself will show every job system-wide that is in the queue. Not particularly usefule
+    "squeue -A <group_name>" will show every job queued up for a group.
+    "squeue -u <user_name>" will show every job queued up for a user.
+
+  The 'sacct' command will show job information for the current user
+
+#----------
+# Canceling scripts
+#----------
+
+  The 'scancel' command is used to cancel a job
+    "scancel <jobid>"
