@@ -1,0 +1,9 @@
+flma 3086 http://spatialreference.org/ref/epsg/3086/
+clc 3087 http://spatialreference.org/ref/epsg/3087/
+dem 4269 http://spatialreference.org/ref/epsg/4269/
+occ 4269 http://spatialreference.org/ref/epsg/4269/
+worldclim 4326 http://spatialreference.org/ref/epsg/4326/
+samples 4326 http://spatialreference.org/ref/epsg/4326/
+
+
+EPSG:3513
